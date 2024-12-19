@@ -1,0 +1,32 @@
+1) Install helm 
+
+2) Install kube-prometheus-stack
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+3) Deploy the chart
+
+helm install monitoring prometheus-community/kube-prometheus-stack \
+-n monitoring \
+-f ./01-alert-manager-stack.yaml
+     
+     when you deploy kube-prometheus stack it will deploy or launch pods below
+        1) grafana 
+        2) kube-state-metrics exporter  
+        3) node-exporter 
+        4) prometheus 
+    To install alert manager we are using 01-alert-manager-stack.yaml 
+
+
+4) Execute below commands to access prometheus, grafana, alertmanager 
+    
+    1) kubectl port-forward service/prometheus-operated -n monitoring 9090:9090 --address 0.0.0.0
+    2) kubectl port-forward service/monitoring-grafana -n monitoring 8080:80 --address 0.0.0.0
+              
+              Grafana UI: username is Admin
+              Grafana UI: password is prom-operator  
+
+    3) kubectl port-forward service/alertmanager-operated -n monitoring 9093:9093 --address 0.0.0.0
+
+    we can access the above ones through ingress but for practice we are exposing through port forwarding.
+
